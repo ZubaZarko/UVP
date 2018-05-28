@@ -1,17 +1,23 @@
 class Racun:
+    stanje=0
+    stavilka_racuna='' 
 
-    def __init__(self, pin):
+    def __init__(self, stevilka_racuna):
+        self.stevilka_racuna = stevilka_racuna
         self.stanje = 0
-        self.transakcije = []
-        self.pin = pin
+        with open(stevilka_racuna) as racun:
+            for vrstica in racun:
+                self.stanje = float(vrstica.split(',')[1].strip())
 
-    def __str__(self):
+    def __repr__(self):
         return('Stanje na vasem racunu: {}€').format(self.stanje)
+
+    def preveri_stanje(self, st_racuna):
+        print('Stanje na vasem racunu: {}€').format(self.stanje)
 
     def dvig(self, znesek):
         if znesek > self.stanje:
             return('Stanje na vasem racunu je prenizko')
-
         else:
             self.stanje -= znesek
             self.transakcije.append(self.stanje)
