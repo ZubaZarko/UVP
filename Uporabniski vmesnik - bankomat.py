@@ -6,18 +6,19 @@ class Bankomat_vmesnik():
 
 	def __init__(self, okno):
 
-		self.prijava = Frame(okno)
+		self.prijava = Frame(okno, background='palegreen')
 
-		self.obvestilo = Label(self.prijava, font="Gill_Sans 30 bold", text='Pozdravljeni v Piton banki!')
-		self.vpisi_pin = Label(self.prijava, font="Gill_Sans 16" , text='Tukaj vnesite svojo PIN kodo:')
+		self.obvestilo = Label(self.prijava, font="Gill_Sans 30 bold", text='Pozdravljeni v Piton banki!', background='palegreen')
+		self.vpisi_pin = Label(self.prijava, font="Gill_Sans 16" , text='Tukaj vnesite svojo PIN kodo:', background='palegreen')
 		self.vnos_pin = Entry(self.prijava, justify='center',font="Gill_Sans 20 bold", width=6, show='•', background='lightgray')
-		self.potrdi_pin = Button(self.prijava, font="Gill_Sans 18 bold", text='POTRDI', command=self.preveri_pin)
+		self.potrdi_pin = Button(self.prijava, font="Gill_Sans 18 bold", text='POTRDI', command=self.preveri_pin, background='palegreen')
 
 
 		self.glavno_okno = Frame(okno)
 
+		self.napis = Label(self.glavno_okno, font='Gill_Sans 8', text='Banka Piton Inc., ATM num.: 322112')
 		self.izhodni_podatki = DoubleVar(okno) #tuki nastavim kaj je se izpise na oknu
-		self.vnos = Label(self.glavno_okno, font='Gill_Sans 15 bold', text='Vnesi znesek:')
+		self.vnos = Label(self.glavno_okno, font='Gill_Sans 12 bold', text='Vnesi znesek:')
 		self.display = Entry(self.glavno_okno, justify='center', background='powderblue',
 			width=40, font='16', textvariable=self.izhodni_podatki)
 		self.vnos_zneska = Entry(self.glavno_okno, justify='center')
@@ -35,16 +36,17 @@ class Bankomat_vmesnik():
 		self.potrdi_pin.pack()
 		self.prijava.pack()
 
-		self.display.pack()
-		self.vnos.pack()
-		self.vnos_zneska.pack()
-		self.gumb_polog.pack()
-		self.gumb_dvig.pack()
-		self.gumb_stanje.pack()
-		self.gumb_transakcije.pack()
-		self.okno_nakazilo.pack()
-		self.gumb_nakazilo.pack()
-		self.gumb_izhod.pack()
+		self.napis.grid(row=0, column=0)
+		self.display.grid(row=1, column=1, columnspan=4)
+		self.vnos.grid(row=2, column=1)
+		self.vnos_zneska.grid(row=2, column=1, columnspan=4)
+		self.gumb_polog.grid(row=3, column=3)
+		self.gumb_dvig.grid(row=4, column=3)
+		self.gumb_stanje.grid(row=3, column=2)
+		self.gumb_transakcije.grid(row=4, column=2)
+		self.okno_nakazilo.grid(row=6, column=1, columnspan=3)
+		self.gumb_nakazilo.grid(row=6, column=3)
+		self.gumb_izhod.grid(row=8, column=5)
 
 	def preveri_pin(self):
 		if self.vnos_pin.get() == '':
@@ -62,7 +64,7 @@ class Bankomat_vmesnik():
 					self.izhodni_podatki.set(str(self.racun.stevilka_racuna))
 				else:
 					pass
-			return self.vnos_pin.delete(0, 'end')
+			return self.vnos_pin.delete(0, END)
 
 	def polozi(self):##tezeva z zapisovanjem v file, brise mi starega
 		if self.vnos_zneska.get() == '':
