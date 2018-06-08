@@ -3,7 +3,6 @@ class Racun:
     def __init__(self, stevilka_racuna):
         self.stevilka_racuna = stevilka_racuna
         self.stanje = 0
-        self.transakcije = []
         with open(stevilka_racuna) as racun:
             for vrstica in racun:
                 self.stanje = float(vrstica.split(',')[1].strip())
@@ -36,22 +35,20 @@ class Racun:
             for vrstica in usernames:
                 vsi_racuni.append(vrstica[0:20])
         if self.stanje < kolicina:
-            print('Stanje na vasem racunu je prenizko')
-            return 0
+            return 'Stanje na vasem racunu je prenizko'
         elif st_prejemnika in vsi_racuni:
             self.dvig(kolicina)
             prejemnik = Racun(st_prejemnika)
             prejemnik.polog(kolicina)
-            return 1
+            return 'Transakcija uspesno potekla!'
         else:
-            print('Transakcijska stevilka ne obstaja')
-            return 2
+            return 'Transakcijska stevilka ne obstaja'
 
     def izpis_prometa(self):
-        self.transakcije.clear()
+        transakcije = []
         with open(self.stevilka_racuna) as racun:
             for vrstica in racun:
-                self.transakcije.append(vrstica.split(',')[0].strip())
-        print(self.transakcije)
+                transakcije.append(vrstica.split(',')[0].strip())
+        return ', '.join(transakcije)
 
 

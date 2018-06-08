@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 from Model_racun import *
 
 
@@ -12,7 +13,7 @@ class Bankomat_vmesnik():
 		self.vpisi_pin = Label(self.prijava, font="Gill_Sans 16" , text='Tukaj vnesite svojo PIN kodo:', background='palegreen')
 		self.vnos_pin = Entry(self.prijava, justify='center',font="Gill_Sans 20 bold", width=6, show='•', background='lightgray')
 		self.potrdi_pin = Button(self.prijava, font="Gill_Sans 18 bold", text='POTRDI', command=self.preveri_pin, background='palegreen')
-
+		self.stevec_poskusov = 3
 
 		self.glavno_okno = Frame(okno)
 
@@ -62,49 +63,46 @@ class Bankomat_vmesnik():
 					self.glavno_okno.pack()
 					self.racun = Racun(st_racuna)###tole povzroci da on zacn delovat kot objekt, skrit pod st. racuna
 					self.izhodni_podatki.set(str(self.racun.stevilka_racuna))
+					return self.vnos_pin.delete(0, 'end')
 				else:
 					pass
-			return self.vnos_pin.delete(0, END)
+			messagebox.showerror('Opozorilo!', 'Napacna PIN koda!') #sprozi opozorilno okno, lahko nardim se stevec...
+			self.vnos_pin.delete(0, 'end')
 
-	def polozi(self):##tezeva z zapisovanjem v file, brise mi starega
+	def polozi(self):
+		znesek = float(self.vnos_zneska.get())
 		if self.vnos_zneska.get() == '':
-			return self.izhodni_podatki.set('Najprej vnesite zeljeni znesek')
-		self.racun.polog(float(self.vnos_zneska.get()))
+			self.izhodni_podatki.set('Najprej vnesite zeljeni znesek')
+		self.racun.polog(znesek)
 		self.izhodni_podatki.set('Polog uspesen!')
-		return self.vnos_zneska.delete(0, 'end')
+		self.vnos_zneska.delete(0, 'end')
 
 	def dvigni(self):
+		znesek = float(self.vnos_zneska.get())
 		if self.vnos_zneska.get() == '':
-			return self.izhodni_podatki.set('Najprej vnesite zeljeni znesek')
-		elif self.racun.dvig(float(self.vnos_zneska.get())):
-			return self.izhodni_podatki.set('Dvig uspesen!')
+			self.izhodni_podatki.set('Najprej vnesite zeljeni znesek')
+		elif self.racun.dvig(znesek):
+			self.izhodni_podatki.set('Dvig uspesen!')
 		else:
 			self.izhodni_podatki.set('Stanje na vasem racunu je prenizko!')
-		return self.vnos_zneska.delete(0, 'end')
+		self.vnos_zneska.delete(0, 'end')
 
 	def preveri_stanje(self):
 		self.izhodni_podatki.set('Stanje na vasem racunu je {}€'.format(self.racun.stanje))
-		
 
 	def izpisi_transkacij(self):
-		self.racun.izpis_prometa()
-		self.izhodni_podatki.set(", ".join([str(x) for x in self.racun.transakcije]))	#ustvari niz z elementi sez.
-		return self.vnos_zneska.delete(0, 'end')																				#in elemente loci z ", "
+		self.izhodni_podatki.set(self.racun.izpis_prometa())																				#in elemente loci z ", "
 
 	def nakazilo(self):
-		if self.vnos_zneska.get() == '':
-			return self.izhodni_podatki.set('Vnesite zeljeni znesek!')
-		elif self.okno_nakazilo.get() == '':
-			return self.izhodni_podatki.set('Vnesite stevilko racuna prejemnika!')
-		elif self.racun.nakazi(self.okno_nakazilo.get() ,float(self.vnos_zneska.get())) == 1:
-			return self.izhodni_podatki.set('Transakcija uspesno potekla!')
-		elif self.racun.nakazi(self.okno_nakazilo.get() ,float(self.vnos_zneska.get())) == 0:
-			return self.izhodni_podatki.set('Stanje na vasem racunu je prenizko')
+		znesek = self.vnos_zneska.get()
+		st_prejemnika = self.okno_nakazilo.get()
+		if znesek == '':
+			self.izhodni_podatki.set('Vnesite zeljeni znesek!')
+		elif st_prejemnika == '':
+			self.izhodni_podatki.set('Vnesite stevilko racuna prejemnika!')
 		else:
-			return self.izhodni_podatki.set('Transakcijska stevilka ne obstaja')
-
-
-
+			self.izhodni_podatki.set(self.racun.nakazi(st_prejemnika, float(znesek)))
+			
 	def izhod(self):
 		self.okno_nakazilo.delete(0, 'end') #problem, ker mi ne pocisti okna ob izpisu...
 		self.glavno_okno.pack_forget()
