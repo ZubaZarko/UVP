@@ -49,6 +49,11 @@ class Bankomat_vmesnik():
 		self.gumb_nakazilo.grid(row=6, column=3)
 		self.gumb_izhod.grid(row=8, column=5)
 
+	def stevec(self):
+		self.stevec_poskusov -= 1
+		if self.stevec_poskusov == 0:
+			okno.destroy()
+
 	def preveri_pin(self):
 		if self.vnos_pin.get() == '':
 			return None
@@ -66,7 +71,8 @@ class Bankomat_vmesnik():
 					return self.vnos_pin.delete(0, 'end')
 				else:
 					pass
-			messagebox.showerror('Opozorilo!', 'Napacna PIN koda!') #sprozi opozorilno okno, lahko nardim se stevec...
+			self.stevec()
+			messagebox.showerror('Opozorilo!', 'Napacna PIN koda!\n\nStevilo preostalih poskusov: {}'.format(self.stevec_poskusov))
 			self.vnos_pin.delete(0, 'end')
 
 	def polozi(self):

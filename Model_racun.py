@@ -24,7 +24,7 @@ class Racun:
                 print('-{}, {}'.format(znesek, self.stanje), file=racun)
             return True
 
-    def polog(self, koliko):      #ne vem kako ucinkovito pisati v datoteko
+    def polog(self, koliko):     
         self.stanje += koliko
         with open(self.stevilka_racuna, 'a') as racun:
             print('+{}, {}'.format(koliko, self.stanje), file=racun)
